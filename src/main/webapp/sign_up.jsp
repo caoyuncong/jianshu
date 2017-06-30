@@ -5,6 +5,7 @@
   Time: 20:52
   To change this template use File | Settings | File Templates.
 --%>
+<!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -64,6 +65,7 @@
 
         var isNickValidated; // 昵称通过了验证
         var isMobileValidated; // 手机号通过了验证
+        var isPasswordValidated; // 密码通过了验证
 
         function showMessage(element, text, removedClass, addedClass) {
             element.parent()
@@ -76,66 +78,109 @@
                 .fadeIn('slow');
         }
 
-        function validate(async) {
-            var nick = $('#nick');
-            if (nick.val().trim().length === 0) {
+        function validate(async, field) {
+            var element = $('#' + field);
+            var name = (field === 'nick') ? '昵称' : '手机号';
+            if (element.val().trim().length === 0) {
                 showMessage(
-                    nick,
-                    '请输入昵称',
+                    element,
+                    '请输入' + name,
                     ['has-success', 'text-success'],
                     ['has-error', 'text-danger']
                 );
-                nick.focus(); // todo ?
                 isNickValidated = false;
                 return;
             }
             $.ajax({
                 url: 'user',
                 type: 'post',
-                data: {'action': 'isNickExisted', 'nick': nick.val()},
+                data: {'action': 'isNickOrMobileExisted', 'field': field, 'value': element.val()},
                 dataType: 'json',
                 async: async,
                 success: function (result) {
+                    var isExisted = result.isExisted; // false
+                    console.log("isExisted: " + isExisted);
 
-                    var isNickExisted = result.isNickExisted; // false
-                    console.log("isNickExisted: " + isNickExisted);
-
-                    if (isNickExisted) {
+                    if (isExisted) {
                         showMessage(
-                            nick,
-                            '昵称 已经被使用',
+                            element,
+                            name + ' 已经被使用',
                             ['has-success', 'text-success'],
                             ['has-error', 'text-danger']
                         );
-                        isNickExisted = false;
+                        if (field === 'nick') {
+                            isNickValidated = false;
+                        } else {
+                            isMobileValidated = false;
+                        }
                     } else {
                         showMessage(
-                            nick,
-                            '昵称 已经被使用',
-                            ['has-success', 'text-success'],
-                            ['has-error', 'text-danger']
+                            element,
+                            name + ' 可以使用',
+                            ['has-error', 'text-danger'],
+                            ['has-success', 'text-success']
                         );
-                        isNickExisted = true;
+                        if (field === 'nick') {
+                            isNickValidated = true;
+                        } else {
+                            isMobileValidated = true;
+                        }
                     }
+                },
+                error: function () {
+                    window.location.href = 'default.jsp?message=ERROR.';
                 }
             });
         }
 
+        function validatePassword() {
+            var password = $('#password');
+            if (password.val().length < 6) {
+                showMessage(
+                    password,
+                    '密码不能少于6个字符',
+                    ['has-success', 'text-success'],
+                    ['has-error', 'text-danger']
+                );
+                isPasswordValidated = false;
+            } else {
+                showMessage(
+                    password,
+                    '密码可以使用',
+                    ['has-error', 'text-danger'],
+                    ['has-success', 'text-success']
+                );
+                isPasswordValidated = true;
+            }
+        }
+
         $(function () {
-            $('#index').removeClass('active');
+            $('#li-index').removeClass('active');
 
             $('#nick').blur(function () {
-                validate(true);
+                validate(true, 'nick');
+            });
+
+            $('#mobile').blur(function () {
+                validate(true, 'mobile');
+            });
+
+            $('password').blur(function () {
+                validatePassword();
             });
 
             $('#sign-up-form').submit(function () {
-                validate(false);
-                return isNickValidated && isMobileValidated;
+                validate(false, 'nick');
+                validate(false, 'mobile');
+                validatePassword();
                 if (!isNickValidated) {
                     $('#nick').focus();
-                }else {
+                } else if (!isMobileValidated) {
                     $('#mobile').focus();
+                }else {
+                    $('#password').focus();
                 }
+                return isNickValidated && isMobileValidated;
             });
         });
     </script>
@@ -145,22 +190,22 @@
 <div class="container">
     <div id="logo"><img src="static/image/logo.png" alt="简书"></div>
     <div class="col-md-4 col-md-offset-4" id="form-box">
-        <h3 class="text-center"><a href="" class="text-muted">登录</a> . <a href="" id="sign-up">注册</a></h3>
+        <h3 class="text-center"><a href="sign_in.jsp" class="text-muted">登录</a> · <a href="" id="sign-up">注册</a></h3>
         <form id="sign-up-form" action="user" class="form-horizontal" method="post">
             <input type="hidden" name="action" value="signUp">
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                <input type="text" name="nick" placeholder="你的昵称" class="form-control input-lg" id="nick">
+                <input id="nick" type="text" name="nick" placeholder="你的昵称" class="form-control input-lg">
             </div>
             <small id="nick-message"></small>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></span>
-                <input type="text" name="mobile" class="form-control input-lg" placeholder="手机号">
+                <input id="mobile" type="text" name="mobile" class="form-control input-lg" placeholder="手机号">
             </div>
             <small id="mobile-message"></small>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                <input name="password" class="form-control input-lg" type="password" placeholder="设置密码">
+                <input id="password" name="password" class="form-control input-lg" type="password" placeholder="设置密码">
             </div>
             <small id="password-message"></small>
             <button class="btn btn-success btn-lg btn-block">注册</button>

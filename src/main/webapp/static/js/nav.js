@@ -5,7 +5,7 @@ $(function () {
 //            $.fn.bootstrapSwitch.defaults.size = 'mini';
     $("[name='night-mode']").bootstrapSwitch();
     $("[name='font-mode']").bootstrapSwitch();
-    $('#sign-up').click(function () {
+    $('#nav-sign-up').click(function () {
         console.log('sign up...');
         window.location.href = "sign_up.jsp";
     });

@@ -5,7 +5,7 @@
   Time: 10:49
   To change this template use File | Settings | File Templates.
 --%>
-<
+<!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
@@ -27,7 +27,10 @@
   <%@ include file="nav.jsp"%>
   <div class="container">
     <h1>首页</h1>
+    <%--<p><img class="img-circle" src="static/image/${sessionScope.user.avatar}" alt="${sessionScope.user.nick}" title="${sessionScope.user.nick}" width="72"></p>--%>
+    <p><img class="img-circle" src="static/image/default-avatar.png" alt="${sessionScope.user.nick}" title="${sessionScope.user.nick}" width="72"></p>
     <small class="text-danger">${requestScope.message}</small>
+    <small class="text-danger">${param.message}</small>
   </div>
   </body>
 </html>

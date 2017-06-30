@@ -11,7 +11,7 @@
         </div>
         <div id="nav" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active" id="index"><a href="">首页</a></li>
+                <li class="active" id="li-index"><a href="/">首页</a></li>
                 <li><a href="">下载 App</a></li>
             </ul>
             <form action="" class="navbar-form navbar-left" method="post">
@@ -39,9 +39,9 @@
                         <li></li>
                     </ul>
                 </li>
-                <li><a href="">登录</a></li>
+                <li id="li-sign-in"><a id="nav-sign-in" href="sign_in.jsp">登录</a></li>
                 <li>
-                    <button id="sign-up" class="btn btn-default navbar-btn">注册</button>
+                    <button id="nav-sign-up" class="btn btn-default navbar-btn">注册</button>
                 </li>
                 <li>
                     <button id="write-note" class="btn btn-danger navbar-btn"><i class="glyphicon glyphicon-pencil"></i>
