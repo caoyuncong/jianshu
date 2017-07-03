@@ -96,7 +96,7 @@ CREATE TABLE db_jianshu.collection_note (
   noteId       INT COMMENT 'PK FK',
   PRIMARY KEY (collectionId, noteId)
 )
-  COMMENT '';
+  COMMENT '专题-文章表';
 
 # 7. 关注 follow
 DROP TABLE IF EXISTS db_jianshu.follow;
