@@ -22,6 +22,13 @@ public class User implements Serializable { // 标识接口
     public User() {
     }
 
+    public User(String nick, String mobile, String password, String lastIp) {
+        this.nick = nick;
+        this.mobile = mobile;
+        this.password = password;
+        this.lastIp = lastIp;
+    }
+
     public User(Integer id, String nick, String mobile, String password, String avatar, int pay, double money, String lastIp, String lastTime, String signUpTime) {
         this.id = id;
         this.nick = nick;
